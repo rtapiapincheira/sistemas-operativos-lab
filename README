@@ -1,0 +1,11 @@
+Uses gcc, developed under MacOSX and tested under GNU/Linux Ubuntu.
+
+To clean:
+  $ make clean
+
+To compile:
+  $ make
+
+To execute
+  $ make run
+
