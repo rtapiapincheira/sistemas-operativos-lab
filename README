@@ -1,11 +1,11 @@
 Uses gcc, developed under MacOSX and tested under GNU/Linux Ubuntu.
 
 To clean:
-  $ make clean
+  $ make -f MyMakefile clean
 
 To compile:
-  $ make
+  $ make -f MyMakefile
 
 To execute
-  $ make run
+  $ make -f MyMakefile run
 
