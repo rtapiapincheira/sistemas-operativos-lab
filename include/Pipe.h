@@ -108,8 +108,7 @@ private:
      */
     bool read(_uchar *buffer, size_t len, size_t &bytesRead);
 
-    //bool readFully(char *buffer, size_t len);
-    bool consumeBytes(char *buffer, size_t len);
+    bool consumeBytes(_uchar *buffer, size_t len);
 
 public:
     /**
@@ -122,29 +121,6 @@ public:
      * non-empty).
      */
     bool writeString(const std::string &s);
-
-    /**
-     * Serializes an int value, and writes it into this pipe, making it
-     * available to be read at the other endpoint via maybeReadInt.
-     *
-     * @brief writeInt Writes a 32-bit integer into the pipe.
-     * @param x 32-bit integer value to be sent.
-     * @return true on success, otherwise false (getLastError would return
-     * non-empty).
-     */
-    bool writeInt(int x);
-
-    /**
-     * Serializes a double value (64-bit on most machines), and writes into this
-     * pipe, making it available to be read at the other endpoint via
-     * maybeReadDouble.
-     *
-     * @brief writeDouble Write a double value into the pipe.
-     * @param d Double value to be sent.
-     * @return true on success, otherwise false (getLastError would return
-     * non-empty).
-     */
-    bool writeDouble(double d);
 
     bool maybePullSomeBytes();
 
@@ -159,32 +135,6 @@ public:
      * or there was an error, in which case getLastError will return non-empty.
      */
     bool maybeReadString(std::string &s);
-
-    /**
-     * Deserializes a 32-bit integer value out of this pipe. The value should've
-     * been written in the other endpoint of this pipe using the writeInt
-     * method.
-     *
-     * @brief maybeReadInt Reads an 32-bit integer value if it's possible to do
-     * so.
-     * @param x 32-bit int reference where the value is to be stored.
-     * @return true on success (the value could be read) or false if it couldn't
-     * or there was an error, in which case getLastError will return non-empty.
-     */
-    bool maybeReadInt(int &x);
-
-    /**
-     * Deserializes a Double value (64-bit floating point value, on most
-     * machines) out of this pipe. The value should've been written in the other
-     * endpoint of this pipe using the writeDouble method.
-     *
-     * @brief maybeReadDouble Reads a double floating point value if it's
-     * possible to do so.
-     * @param d Double reference where the value is to be stored.
-     * @return true on success (the value could be read) or false if it couldn't
-     * or there was an error, in which case getLastError will return non-empty.
-     */
-    bool maybeReadDouble(double &d);
 
     /**
      * @brief getLastError Returns the error description of a just failed

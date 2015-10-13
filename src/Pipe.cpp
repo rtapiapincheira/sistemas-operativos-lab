@@ -29,8 +29,6 @@ bool Pipe::open() {
 
 bool Pipe::write(_uchar *buffer, size_t len, size_t &bytesWritten) {
     m_lastError = "";
-    // TODO: chequear el return code de ::write y retornar acorde, quizas deba
-    // TOOD: implementar un while(write) segun el contrato de ::write
     if ((bytesWritten = ::write(m_fdWriter, (char*)buffer, len)) != (size_t)-1) {
         return true;
     }
@@ -41,29 +39,12 @@ bool Pipe::write(_uchar *buffer, size_t len, size_t &bytesWritten) {
 bool Pipe::read(_uchar *buffer, size_t len, size_t &bytesRead) {
     m_lastError = "";
     bytesRead = ::read(m_fdReader, buffer, len);
-    // TODO: chequear el return code de ::read, similar al write de arriba
     if ((bytesRead = ::read(m_fdReader, (char*)buffer, len)) != (size_t)-1) {
         return true;
     }
     m_lastError = "Could not read bytes from the pipe.";
     return false;
 }
-
-/*bool Pipe::readFully(char *buffer, size_t len) {
-    m_lastError = "";
-    size_t r = 0;
-    while(r != len) {
-        size_t p = 0;
-        bool state = read(buffer+r, len-r, p);
-        if (!state) {
-            std::string newError = "ReadFully error: " + m_lastError;
-            m_lastError = newError;
-            return false;
-        }
-        r += p;
-    }
-    return true;
-}*/
 
 bool Pipe::consumeBytes(_uchar *buffer, size_t len) {
     if (len <= m_bufferLength) {
@@ -89,7 +70,7 @@ bool Pipe::writeString(const std::string &s) {
     Utils::ushort2bytes(size, sizeBytes);
 
     size_t written = 0;
-    if (!write((char*)&sizeBytes, 2, written)) {
+    if (!write(sizeBytes, 2, written)) {
         m_lastError = "Couldn't send std::string.";
         return false;
     }
@@ -98,7 +79,7 @@ bool Pipe::writeString(const std::string &s) {
         return false;
     }
 
-    if (!write((char*)s.c_str(), size, written)) {
+    if (!write((_uchar*)s.c_str(), size, written)) {
         m_lastError = "Couldn't send std::string.";
         return false;
     }
@@ -111,35 +92,12 @@ bool Pipe::writeString(const std::string &s) {
     return true;
 }
 
-bool Pipe::writeInt(int x) {
-    m_lastError = "";
-
-    _uchar intBytes[sizeof(int)];
-    Utils::int2bytes(x, intBytes);
-
-    size_t written = 0;
-    if (!write((char*)intBytes, 4, written)) {
-        m_lastError = "Couldn't send int.";
-        return false;
-    }
-    if (written != 4) {
-        m_lastError = "Couldn't send int (written count mismatch).";
-        return false;
-    }
-
-    // All seems ok!
-    return true;
-}
-
-bool Pipe::writeDouble(double d) {
-    m_lastError = "";
-}
-
 bool Pipe::maybePullSomeBytes() {
     // We already have plenty of bytes on the buffer, go ahead and consume them!
     if (m_bufferLength == BUFFER_LENGTH) {
         return true;
     }
+    // Read at most, as many bytes I have room for.
     size_t maxToRead = BUFFER_LENGTH - m_bufferLength;
     size_t auxSize = 0;
     if (!read(m_auxBuffer, maxToRead, auxSize)) {
@@ -149,9 +107,12 @@ bool Pipe::maybePullSomeBytes() {
     }
     // Copy m_auxBuffer into m_readBuffer.
     for (size_t i = 0; i < auxSize; i++) {
-        m_readBuffer
+        // Append at the end of the current m_readBuffer.
+        m_readBuffer[(m_bufferStart + m_bufferLength) % BUFFER_LENGTH]
+                = m_auxBuffer[i];
+        m_bufferLength++;
     }
-    return false;
+    return true;
 }
 
 bool Pipe::maybeReadString(std::string &s) {
@@ -178,44 +139,12 @@ bool Pipe::maybeReadString(std::string &s) {
             // Get string byte's out of the buffer, and build a proper string
             _uchar *data = new _uchar[stringSize];
             consumeBytes(data, stringSize);
-            s = std::string(data); // TODO: check if this is secure
+            s = std::string((const char*)data, stringSize); // TODO: check if this is secure
             delete[] data;
             return true;
         }
     }
-
     return false;
-
-    /*
-    // Read from pipe size of the incoming std::string.
-    _uchar sizeBytes[sizeof(_ushort)];
-    if (!readFully(sizeBytes, sizeof(_ushort))) {
-        std::string newError = "MaybeReadString error (size of std::string): "
-                + m_lastError;
-        m_lastError = newError;
-        return false;
-    }
-    _ushort bytesToRead = Utils::bytes2ushort(sizeBytes);
-
-    // Read from pipe bytes of the incoming std::string.
-    _uchar *buffer = new _uchar[bytesToRead];
-    if (!readFully(buffer, bytesToRead)) {
-        delete[] buffer;
-        std::string newError = "MaybeReadString error (bytes of std::string):"
-                + m_lastError;
-        m_lastError = newError;
-        return false;
-    }
-    */
-
-}
-
-bool Pipe::maybeReadInt(int &x) {
-    m_lastError = "";
-}
-
-bool Pipe::maybeReadDouble(double &d) {
-    m_lastError = "";
 }
 
 std::string Pipe::getLastError() const {
