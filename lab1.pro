@@ -5,11 +5,32 @@ TEMPLATE = app
 
 QMAKE_MAC_SDK = macosx10.11
 
+INCLUDEPATH += include
+
 HEADERS += \
-    utils.h
+    include/ChildProcess.h \
+    include/File.h \
+    include/GrandChildProcess.h \
+    include/MainProcess.h \
+    include/Options.h \
+    include/Pipe.h \
+    include/Process.h \
+    include/System.h \
+    include/Utils.h
 
 SOURCES += \
-    main.cpp
+    src/main.cpp \
+    src/main2.cpp \
+    \
+    src/ChildProcess.cpp \
+    src/File.cpp \
+    src/GrandChildProcess.cpp \
+    src/MainProcess.cpp \
+    src/Options.cpp \
+    src/Pipe.cpp \
+    src/Process.cpp \
+    src/System.cpp \
+    src/Utils.cpp
 
 OTHER_FILES += \
     MyMakefile \
