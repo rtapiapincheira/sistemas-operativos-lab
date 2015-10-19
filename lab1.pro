@@ -15,12 +15,10 @@ HEADERS += \
     include/Options.h \
     include/Pipe.h \
     include/Process.h \
-    include/System.h \
     include/Utils.h
 
 SOURCES += \
     src/main.cpp \
-    src/main2.cpp \
     \
     src/ChildProcess.cpp \
     src/File.cpp \
@@ -29,7 +27,6 @@ SOURCES += \
     src/Options.cpp \
     src/Pipe.cpp \
     src/Process.cpp \
-    src/System.cpp \
     src/Utils.cpp
 
 OTHER_FILES += \

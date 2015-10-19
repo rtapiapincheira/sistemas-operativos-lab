@@ -1,21 +1,20 @@
-#include <iostream>
-
+#include <Process.h>
+#include <MainProcess.h>
+#include <ChildProcess.h>
+#include <Pipe.h>
 #include <Utils.h>
 
-using namespace std;
-
 int main(int argc, char **argv) {
+    Options options;
+    options.assign(argc, argv);
 
-    int val = 1234;
+    if (!options.parse()) {
+        options.printUsage();
+        return 1;
+    }
+    options.printArgs();
 
-    _uchar buffer[2];
-    Utils::ushort2bytes(val, buffer);
-
-    cout << "bytes:" << (int)buffer[0] << "," << (int)buffer[1] << endl;
-
-    _ushort u = Utils::bytes2ushort(buffer);
-
-    cout << "_ushort:" << u << endl;
-
-    return 0;
+    MainProcess mainProcess;
+    mainProcess.assign(options);
+    return mainProcess.execute();
 }

@@ -27,9 +27,21 @@ bool Pipe::open() {
     return true;
 }
 
+bool Pipe::closeAll() {
+    return closeReader() && closeWriter();
+}
+bool Pipe::closeReader() {
+    return (close(m_fdReader) == 0);
+}
+bool Pipe::closeWriter() {
+    return (close(m_fdWriter) == 0);
+}
+
 bool Pipe::write(_uchar *buffer, size_t len, size_t &bytesWritten) {
     m_lastError = "";
-    if ((bytesWritten = ::write(m_fdWriter, (char*)buffer, len)) != (size_t)-1) {
+    ssize_t st = ::write(m_fdWriter, (char*)buffer, len);
+    if (st >= 0) {
+        bytesWritten = (size_t)st;
         return true;
     }
     m_lastError = "Could not write all the bytes to the pipe.";
@@ -38,8 +50,9 @@ bool Pipe::write(_uchar *buffer, size_t len, size_t &bytesWritten) {
 
 bool Pipe::read(_uchar *buffer, size_t len, size_t &bytesRead) {
     m_lastError = "";
-    bytesRead = ::read(m_fdReader, buffer, len);
-    if ((bytesRead = ::read(m_fdReader, (char*)buffer, len)) != (size_t)-1) {
+    ssize_t st = ::read(m_fdReader, (char*)buffer, len);
+    if (st >= 0) {
+        bytesRead = (size_t)st;
         return true;
     }
     m_lastError = "Could not read bytes from the pipe.";
@@ -49,14 +62,14 @@ bool Pipe::read(_uchar *buffer, size_t len, size_t &bytesRead) {
 bool Pipe::consumeBytes(_uchar *buffer, size_t len) {
     if (len <= m_bufferLength) {
         size_t i = 0;
-        while(len > 0) {
-            _uchar nextChar = m_readBuffer[(m_bufferStart + m_bufferLength) % BUFFER_LENGTH];
+        while(i < len) {
+            char nextChar = m_readBuffer[(m_bufferStart + i) % BUFFER_LENGTH];
             buffer[i] = nextChar;
             i++;
-            m_bufferStart = (m_bufferStart+1) % BUFFER_LENGTH;
-            m_bufferLength--;
-            len--;
+
         }
+        m_bufferStart = (m_bufferStart + len) % BUFFER_LENGTH;
+        m_bufferLength -= len;
         return true;
     }
     return false;
@@ -94,17 +107,20 @@ bool Pipe::writeString(const std::string &s) {
 
 bool Pipe::maybePullSomeBytes() {
     // We already have plenty of bytes on the buffer, go ahead and consume them!
+
     if (m_bufferLength == BUFFER_LENGTH) {
         return true;
     }
     // Read at most, as many bytes I have room for.
     size_t maxToRead = BUFFER_LENGTH - m_bufferLength;
+
     size_t auxSize = 0;
     if (!read(m_auxBuffer, maxToRead, auxSize)) {
         std::string newError = "MaybePullSomeBytes error:" + m_lastError;
         m_lastError = newError;
         return false;
     }
+
     // Copy m_auxBuffer into m_readBuffer.
     for (size_t i = 0; i < auxSize; i++) {
         // Append at the end of the current m_readBuffer.
@@ -130,6 +146,7 @@ bool Pipe::maybeReadString(std::string &s) {
             m_readBuffer[(m_bufferStart+1) % BUFFER_LENGTH]
         };
         _ushort stringSize = Utils::bytes2ushort(sizeBytes);
+
         // There's enough bytes to extract a complete string
         if (m_bufferLength >= 2+stringSize) {
             // Consume the first 2bytes, as we already have the size of the
@@ -137,9 +154,14 @@ bool Pipe::maybeReadString(std::string &s) {
             _uchar tempBuffer[2];
             consumeBytes(tempBuffer, 2);
             // Get string byte's out of the buffer, and build a proper string
-            _uchar *data = new _uchar[stringSize];
+            _uchar *data = new _uchar[stringSize+1];
             consumeBytes(data, stringSize);
-            s = std::string((const char*)data, stringSize); // TODO: check if this is secure
+
+            // Since the std::string constructor requires a c-style string, we
+            // need to make sure it ends with a NULL character.
+            data[stringSize] = 0;
+
+            s = std::string((const char*)data, stringSize);
             delete[] data;
             return true;
         }

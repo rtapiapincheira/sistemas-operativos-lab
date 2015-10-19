@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#define MIN_FUND 'A'
+#define MAX_FUND 'E'
+
 class Options {
 private:
     int m_argc;
@@ -15,11 +18,13 @@ private:
     std::string m_fileName;
 
 public:
-    Options(int argc, char **argv);
+    Options();
+    void assign(int argc, char **argv);
     ~Options();
 
-private:
-    void parse();
+    bool parse();
+    void printUsage();
+    void printArgs();
 
 public:
     bool hasFixedRent() const;

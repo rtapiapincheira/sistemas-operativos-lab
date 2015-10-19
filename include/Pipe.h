@@ -6,7 +6,10 @@
 
 #include <Utils.h>
 
-#define BUFFER_LENGTH 4096
+#include <iostream>
+using namespace std;
+
+#define BUFFER_LENGTH 8192
 
 /**
  * @brief The Pipe class represents a two-way communication channel, suitable
@@ -79,6 +82,10 @@ public:
      * getLastError would return non-empty).
      */
     bool open();
+
+    bool closeAll();
+    bool closeReader();
+    bool closeWriter();
 
 private:
     /**

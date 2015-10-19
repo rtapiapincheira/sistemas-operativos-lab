@@ -3,15 +3,21 @@
 
 #include <Options.h>
 #include <Process.h>
+#include <ChildProcess.h>
 
 class MainProcess : public Process {
 private:
     Options m_options;
 
 public:
-    MainProcess(const Options &options);
+    MainProcess();
+
+    void assign(const Options &options);
+
     virtual ~MainProcess();
     virtual int execute();
+
+    _vstring buildResponse();
 };
 
 #endif // _MAIN_PROCESS_H
