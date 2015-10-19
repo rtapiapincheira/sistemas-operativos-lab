@@ -1,10 +1,11 @@
 #ifndef _CHILD_PROCESS_H
 #define _CHILD_PROCESS_H
 
-#include <string>
-#include <vector>
 #include <GrandChildProcess.h>
 #include <Process.h>
+
+#include <string>
+#include <vector>
 
 /**
  * @brief The ChildProcess class defines the logic to be executed on a second

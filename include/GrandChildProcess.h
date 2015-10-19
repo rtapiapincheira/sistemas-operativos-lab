@@ -1,9 +1,13 @@
 #ifndef _GRAND_CHILD_PROCESS_H
 #define _GRAND_CHILD_PROCESS_H
 
-#include <string>
-#include <Process.h>
 #include <GrandChildProcess.h>
+#include <Options.h>
+#include <Process.h>
+
+#include <string>
+#include <algorithm>
+#include <fstream>
 
 /**
  * @brief The FileRecord class represents a line of the file being processed.

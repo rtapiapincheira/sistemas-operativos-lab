@@ -1,13 +1,10 @@
 #ifndef _PIPE_H
 #define _PIPE_H
 
-#include <string>
-#include <unistd.h>
-
 #include <Utils.h>
 
-#include <iostream>
-using namespace std;
+#include <string>
+#include <unistd.h>
 
 #define BUFFER_LENGTH 8192
 

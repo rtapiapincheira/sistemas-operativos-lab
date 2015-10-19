@@ -1,8 +1,5 @@
 #include <Options.h>
 
-#include <iostream>
-#include <getopt.h>
-
 Options::Options() {
 
 }
@@ -77,7 +74,7 @@ bool Options::parse() {
 }
 
 void Options::printUsage() {
-    std::string program = "./program";
+    std::string program(m_argv[0]);
 
     std::cout << std::endl;
     std::cout << "Long options:" << std::endl;

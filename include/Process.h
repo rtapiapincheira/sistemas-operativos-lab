@@ -1,9 +1,10 @@
 #ifndef _PROCESS_H
 #define _PROCESS_H
 
-#include <vector>
-
 #include <Pipe.h>
+
+#include <iostream>
+#include <vector>
 
 /**
  * @brief The Process class is the entity representation of a running process.

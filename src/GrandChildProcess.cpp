@@ -1,8 +1,4 @@
 #include <GrandChildProcess.h>
-#include <Options.h>
-
-#include <fstream>
-#include <algorithm>
 
 GrandChildProcess::GrandChildProcess() {
     m_level = 2;

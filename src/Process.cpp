@@ -97,7 +97,7 @@ void Process::printStarted() {
     buffer += Utils::int2string(m_ppid);
     buffer += ")";
 
-    cout << buffer << endl;
+    std::cout << buffer << std::endl;
 }
 void Process::printFinished() {
     std::string buffer;
@@ -112,5 +112,5 @@ void Process::printFinished() {
     buffer += Utils::int2string(m_ppid);
     buffer += ")";
 
-    cout << buffer << endl;
+    std::cout << buffer << std::endl;
 }

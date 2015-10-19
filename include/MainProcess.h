@@ -1,9 +1,12 @@
 #ifndef _MAIN_PROCESS_H
 #define _MAIN_PROCESS_H
 
+#include <ChildProcess.h>
 #include <Options.h>
 #include <Process.h>
-#include <ChildProcess.h>
+
+#include <iomanip>
+#include <iostream>
 
 /**
  * @brief The MainProcess class defines the logic to be executed on a first

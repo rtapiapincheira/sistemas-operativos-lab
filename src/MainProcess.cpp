@@ -1,7 +1,4 @@
 #include <MainProcess.h>
-#include <ChildProcess.h>
-
-#include <iomanip>
 
 MainProcess::MainProcess() {
     m_level = 0;
@@ -41,6 +38,7 @@ int MainProcess::execute() {
 
     if (!makeFork()) {
         // Error
+        return 1;
     }
 
 
@@ -48,10 +46,10 @@ int MainProcess::execute() {
     // reach this far).
     _vstring finalResult = buildResponse();
 
-    cout << flush << endl;
-    cout << "Resultado Valorizacion:" << endl;
-    cout << "=======================" << endl;
-    cout << endl;
+    std::cout << std::flush << std::endl;
+    std::cout << "Resultado Valorizacion:" << std::endl;
+    std::cout << "=======================" << std::endl;
+    std::cout << std::endl;
     for (size_t i = 0; i < finalResult.size(); i++) {
         _vstring parts = Utils::split(finalResult[i], ';');
         std::string _rf = parts[0];
@@ -64,12 +62,12 @@ int MainProcess::execute() {
         double rv = Utils::string2double(rv_parts[2]);
         double sum = rf + rv;
 
-        cout << "Total valorizacion tipo de fondo ";
-        cout << "RF=" << std::fixed << std::setw(12) << std::setprecision(2) << rf << ", ";
-        cout << "RV=" << std::fixed << std::setw(12) << std::setprecision(2) << rv << ", ";
-        cout << "suma=" << std::fixed << std::setw(12) << std::setprecision(2) << sum << endl;
+        std::cout << "Total valorizacion tipo de fondo ";
+        std::cout << "RF=" << std::fixed << std::setw(12) << std::setprecision(2) << rf << ", ";
+        std::cout << "RV=" << std::fixed << std::setw(12) << std::setprecision(2) << rv << ", ";
+        std::cout << "suma=" << std::fixed << std::setw(12) << std::setprecision(2) << sum << std::endl;
     }
-    cout << endl << flush;
+    std::cout << std::endl << std::flush;
 
 
     printFinished();

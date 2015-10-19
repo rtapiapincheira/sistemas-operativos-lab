@@ -1,22 +1,34 @@
-all: main main2
+all: lab1
 
-main: main.o
-	gcc main.o -o main
+IDIR=./include
+IFLAGS=-I$(IDIR)
 
-main2: main2.o
-	g++ main2.o -o main2
+ChildProcess.o: src/ChildProcess.cpp $(IDIR)/ChildProcess.h                GrandChildProcess.o Process.o
+		g++ $(IFLAGS) -c src/ChildProcess.cpp -o ChildProcess.o
 
-main.o: main.c
-	gcc -c main.c -o main.o
+GrandChildProcess.o: src/GrandChildProcess.cpp $(IDIR)/GrandChildProcess.h Options.o Process.o
+		g++ $(IFLAGS) -c src/GrandChildProcess.cpp -o GrandChildProcess.o
 
-main2.o: main2.cpp
-	g++ -c main2.cpp -o main2.o
+MainProcess.o: src/MainProcess.cpp $(IDIR)/MainProcess.h                   ChildProcess.o Options.o Process.o
+		g++ $(IFLAGS) -c src/MainProcess.cpp -o MainProcess.o
+
+Options.o: src/Options.cpp $(IDIR)/Options.h
+		g++ $(IFLAGS) -c src/Options.cpp -o Options.o
+
+Pipe.o: src/Pipe.cpp $(IDIR)/Pipe.h                  Utils.o
+		g++ $(IFLAGS) -c src/Pipe.cpp -o Pipe.o
+
+Process.o: src/Process.cpp $(IDIR)/Process.h         Pipe.o
+		g++ $(IFLAGS) -c src/Process.cpp -o Process.o
+
+Utils.o: src/Utils.cpp $(IDIR)/Utils.h
+		g++ $(IFLAGS) -c src/Utils.cpp -o Utils.o
+
+main.o: src/main.cpp                                 ChildProcess.o MainProcess.o Pipe.o Process.o Utils.o
+		g++ $(IFLAGS) -c src/main.cpp -o main.o
+
+lab1: main.o ChildProcess.o GrandChildProcess.o MainProcess.o Options.o Pipe.o Process.o Utils.o
+		g++ main.o ChildProcess.o GrandChildProcess.o MainProcess.o Options.o Pipe.o Process.o Utils.o -o lab1
 
 clean:
-	rm -f main main2 *.o
-
-run_main: main
-	./main
-
-run_main2: main2
-	./main2
+	rm -f lab1 *.o

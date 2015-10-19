@@ -1,6 +1,8 @@
 #ifndef _OPTIONS_H
 #define _OPTIONS_H
 
+#include <getopt.h>
+#include <iostream>
 #include <string>
 #include <vector>
 
