@@ -9,7 +9,6 @@ INCLUDEPATH += include
 
 HEADERS += \
     include/ChildProcess.h \
-    include/File.h \
     include/GrandChildProcess.h \
     include/MainProcess.h \
     include/Options.h \
@@ -21,7 +20,6 @@ SOURCES += \
     src/main.cpp \
     \
     src/ChildProcess.cpp \
-    src/File.cpp \
     src/GrandChildProcess.cpp \
     src/MainProcess.cpp \
     src/Options.cpp \

@@ -83,8 +83,29 @@ public:
      */
     bool open();
 
+    /**
+     * @brief closeAll Closes both writer and reader endpoints of this pipe, no
+     * communication can be achieved by reading or writing any further.
+     * @return true if both endpoints were already open and closed ok. Otherwise
+     * false (if only one was open, it will be closed but this method will yield
+     * a false value anyway).
+     */
     bool closeAll();
+
+    /**
+     * @brief closeReader Closes the readr endpoint of this pipe. No reading
+     * operations will have effect any further.
+     * @return true if reader endpoint was already open, and closed ok; false
+     * otherwise.
+     */
     bool closeReader();
+
+    /**
+     * @brief closeWriter Closes the writer endpoint of this pipe. No writing
+     * operations will have effect any further.
+     * @return true if the writer endpoint was already open, and closed ok;
+     * false otherwise.
+     */
     bool closeWriter();
 
 private:
@@ -115,6 +136,15 @@ private:
      */
     bool read(_uchar *buffer, size_t len, size_t &bytesRead);
 
+    /**
+     * @brief consumeBytes Transfer bytes from this internal buffer into the
+     * supplied address.
+     * @param buffer Memory location where to store the buffers taken from this
+     * internal buffer.
+     * @param len Number of bytes to extract from this internal buffer.
+     * @return true if the internal buffer has len bytes or more, and the
+     * requested bytes were transferred ok into the desidered memory location.
+     */
     bool consumeBytes(_uchar *buffer, size_t len);
 
 public:
@@ -129,6 +159,11 @@ public:
      */
     bool writeString(const std::string &s);
 
+    /**
+     * @brief maybePullSomeBytes Service method which will try to get bytes from
+     * the underlying UNIX pipe and store it in this object's internal buffer.
+     * @return true if any bytes could be read, or false if an error occurred.
+     */
     bool maybePullSomeBytes();
 
     /**
