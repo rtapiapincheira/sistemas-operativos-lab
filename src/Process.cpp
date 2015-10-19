@@ -1,5 +1,7 @@
 #include <Process.h>
 
+#include <sys/wait.h>
+
 Process::Process() :
     m_ppid(-1),
     m_pid(-1),
