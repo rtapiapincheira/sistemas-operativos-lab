@@ -44,6 +44,7 @@ int ChildProcess::execute() {
 
     if (!makeFork()) {
         // Error.
+        return 1;
     }
 
     // Child processes won't reach this far.

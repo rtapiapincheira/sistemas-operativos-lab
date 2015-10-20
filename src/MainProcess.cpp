@@ -52,19 +52,17 @@ int MainProcess::execute() {
     std::cout << std::endl;
     for (size_t i = 0; i < finalResult.size(); i++) {
         _vstring parts = Utils::split(finalResult[i], ';');
-        std::string _rf = parts[0];
-        std::string _rv = parts[0];
 
-        _vstring rf_parts = Utils::split(_rf, ',');
-        _vstring rv_parts = Utils::split(_rv, ',');
+        std::cout << "Total valorizacion tipo de fondo " << (char)('A'+i) << ":  ";
 
-        double rf = Utils::string2double(rf_parts[2]);
-        double rv = Utils::string2double(rv_parts[2]);
-        double sum = rf + rv;
-
-        std::cout << "Total valorizacion tipo de fondo ";
-        std::cout << "RF=" << std::fixed << std::setw(12) << std::setprecision(2) << rf << ", ";
-        std::cout << "RV=" << std::fixed << std::setw(12) << std::setprecision(2) << rv << ", ";
+        double sum = 0.0;
+        for (size_t j = 0; j < parts.size(); j++) {
+            std::string _r = parts[j];
+            _vstring r_parts = Utils::split(_r, ',');
+            double r = Utils::string2double(r_parts[2]);
+            sum += r;
+            std::cout << r_parts[1] << "=" << std::fixed << std::setw(12) << std::setprecision(2) << r << ", ";
+        }
         std::cout << "suma=" << std::fixed << std::setw(12) << std::setprecision(2) << sum << std::endl;
     }
     std::cout << std::endl << std::flush;
@@ -77,7 +75,6 @@ int MainProcess::execute() {
 
 _vstring MainProcess::buildResponse() {
     _vstring response;
-
     _vstring childrenResponse = Process::waitChildren();
     return childrenResponse;
     for (size_t i = 0; i < childrenResponse.size(); i++) {
@@ -85,9 +82,10 @@ _vstring MainProcess::buildResponse() {
         row_i.push_back("child#" + Utils::int2string(i));
         row_i.push_back(childrenResponse[i]);
 
-        response.push_back(Utils::join(row_i, ' '));
+        std::string t = Utils::join(row_i, ' ');
+        response.push_back(t);
+        std::cout << t << std::endl;
     }
-
     return response;
 }
 

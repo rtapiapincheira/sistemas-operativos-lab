@@ -14,6 +14,18 @@ Options::~Options() {
 
 bool Options::parse() {
 
+    /*m_fileName = "/Users/rene/Desktop/sistemas-operativos-lab/data2.txt";
+    m_hasFixedRent = true;
+    m_hasVariableRent = true;
+
+    m_fundTypes.push_back('A');
+    m_fundTypes.push_back('B');
+    m_fundTypes.push_back('C');
+    m_fundTypes.push_back('D');
+    m_fundTypes.push_back('E');
+
+    return true;*/
+
     m_fileName.clear();
     m_fundTypes.clear();
     for (char t = MIN_FUND; t <= MAX_FUND; t++) {

@@ -56,24 +56,23 @@ int GrandChildProcess::execute() {
             if (fr.idTipoFondo == m_fundType) {
                 // Process as RF
                 if (m_isFixedRent) {
-                    // check if idTipoInstrumentoFinanciero matches with the
+                    // Check if idTipoInstrumentoFinanciero matches with the
                     // required rentType
                     if (fr.m_rentType == "RF") {
-                        totalSum += (
-                            fr.cantidad / (1.0 + (fr.tasa / 360.0) * fr.diasAlVencimiento / 100.0)
-                        );
+                        double t =
+                            fr.cantidad / (1.0 + (fr.tasa / 360.0) * fr.diasAlVencimiento / 100.0);
+                        totalSum += t;
                     }
                 }
                 // Process as RV
                 else {
-                    // check if idTipoInstrumentoFinanciero matches with the
+                    // Check if idTipoInstrumentoFinanciero matches with the
                     // required rentType
                     if (fr.m_rentType == "RV") {
                         totalSum += (fr.cantidad * fr.precio);
                     }
                 }
             }
-            // What-ever.
         }
     }
 
