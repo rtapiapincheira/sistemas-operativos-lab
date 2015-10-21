@@ -63,18 +63,6 @@ int ChildProcess::execute() {
 }
 
 _vstring ChildProcess::buildResponse() {
-    _vstring response;
-
-    _vstring childrenResponse = Process::waitChildren();
-    return childrenResponse;
-    for(size_t i = 0; i < childrenResponse.size(); i++) {
-        _vstring row_i;
-        row_i.push_back("grand-child#" + Utils::int2string(i));
-        row_i.push_back(childrenResponse[i]);
-
-        response.push_back(Utils::join(row_i, ' '));
-    }
-
-    return response;
+    return Process::waitChildren();
 }
 
