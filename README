@@ -1,10 +1,1 @@
-Uses gcc, developed under MacOSX and tested under GNU/Linux Ubuntu.
-
-To clean:
-  $ make -f MyMakefile clean
-
-To compile:
-  $ make -f MyMakefile
-
-To execute:
-  $ ./lab1 --Archivo data2.txt
+README
